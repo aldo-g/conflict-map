@@ -1,0 +1,162 @@
+[
+    {
+      "id": "con1",
+      "name": "Syrian Civil War",
+      "type": "civil war",
+      "intensity": "high",
+      "duration": "protracted",
+      "region": "Middle East",
+      "location": {
+        "lat": 35.0,
+        "lng": 38.0
+      },
+      "casualties": 387000,
+      "startDate": "2011-03-15",
+      "description": "Multi-sided civil war in Syria fought between the Syrian Arab Republic led by Syrian president Bashar al-Assad, along with domestic and foreign allies, and various domestic and foreign forces opposing both the Syrian government and each other.",
+      "actors": ["Syrian Government", "Opposition Groups", "Islamic State", "Kurdish Forces"]
+    },
+    {
+      "id": "con2",
+      "name": "Yemen Civil War",
+      "type": "civil war",
+      "intensity": "high",
+      "duration": "protracted",
+      "region": "Middle East",
+      "location": {
+        "lat": 15.552727,
+        "lng": 48.516388
+      },
+      "casualties": 233000,
+      "startDate": "2014-09-21",
+      "description": "Ongoing civil war in Yemen fought between the Abdrabbuh Mansur Hadi-led government and the Houthi armed movement, with both sides receiving external support.",
+      "actors": ["Yemeni Government", "Houthi Movement", "Saudi-led Coalition"]
+    },
+    {
+      "id": "con3",
+      "name": "Afghanistan Conflict",
+      "type": "insurgency",
+      "intensity": "high",
+      "duration": "protracted",
+      "region": "South Asia",
+      "location": {
+        "lat": 33.93911,
+        "lng": 67.709953
+      },
+      "casualties": 157000,
+      "startDate": "2001-10-07",
+      "description": "Ongoing armed conflict in Afghanistan, with periods of varying intensity between government forces, Taliban, and other groups.",
+      "actors": ["Afghan Government", "Taliban", "Islamic State"]
+    },
+    {
+      "id": "con4",
+      "name": "Mexican Drug War",
+      "type": "criminal violence",
+      "intensity": "high",
+      "duration": "protracted",
+      "region": "North America",
+      "location": {
+        "lat": 23.634501,
+        "lng": -102.552784
+      },
+      "casualties": 150000,
+      "startDate": "2006-12-11",
+      "description": "Ongoing asymmetric conflict between the Mexican government and various drug trafficking syndicates.",
+      "actors": ["Mexican Government", "Drug Cartels"]
+    },
+    {
+      "id": "con5",
+      "name": "South Sudan Civil War",
+      "type": "civil war",
+      "intensity": "moderate",
+      "duration": "protracted",
+      "region": "Africa",
+      "location": {
+        "lat": 6.876991,
+        "lng": 31.306978
+      },
+      "casualties": 400000,
+      "startDate": "2013-12-15",
+      "description": "Civil war in South Sudan between government forces and opposition forces.",
+      "actors": ["South Sudanese Government", "Opposition Groups"]
+    },
+    {
+      "id": "con6",
+      "name": "Tigray Conflict",
+      "type": "civil war",
+      "intensity": "high",
+      "duration": "recent",
+      "region": "Africa",
+      "location": {
+        "lat": 14.0,
+        "lng": 38.0
+      },
+      "casualties": 50000,
+      "startDate": "2020-11-04",
+      "description": "Armed conflict in the Tigray Region of Ethiopia between the Ethiopian government and the Tigray People's Liberation Front.",
+      "actors": ["Ethiopian Government", "Tigray People's Liberation Front"]
+    },
+    {
+      "id": "con7",
+      "name": "Kashmir Conflict",
+      "type": "territorial",
+      "intensity": "moderate",
+      "duration": "protracted",
+      "region": "South Asia",
+      "location": {
+        "lat": 34.0,
+        "lng": 76.0
+      },
+      "casualties": 47000,
+      "startDate": "1947-10-22",
+      "description": "Territorial conflict primarily between India and Pakistan over the Kashmir region.",
+      "actors": ["India", "Pakistan", "Kashmiri Separatists"]
+    },
+    {
+      "id": "con8",
+      "name": "Myanmar Civil War",
+      "type": "civil war",
+      "intensity": "moderate",
+      "duration": "protracted",
+      "region": "Southeast Asia",
+      "location": {
+        "lat": 21.916221,
+        "lng": 95.955974
+      },
+      "casualties": 40000,
+      "startDate": "1948-01-04",
+      "description": "Series of civil wars and insurgencies in Myanmar since its independence.",
+      "actors": ["Myanmar Government", "Ethnic Armed Organizations"]
+    },
+    {
+      "id": "con9",
+      "name": "Libyan Civil War",
+      "type": "civil war",
+      "intensity": "moderate",
+      "duration": "recent",
+      "region": "North Africa",
+      "location": {
+        "lat": 26.3351,
+        "lng": 17.228331
+      },
+      "casualties": 25000,
+      "startDate": "2014-05-16",
+      "description": "Ongoing conflict in Libya, fought between various factions seeking control of the territory and oil of Libya.",
+      "actors": ["Government of National Accord", "Libyan National Army"]
+    },
+    {
+      "id": "con10",
+      "name": "Mozambique Insurgency",
+      "type": "insurgency",
+      "intensity": "moderate",
+      "duration": "recent",
+      "region": "Africa",
+      "location": {
+        "lat": -18.665695,
+        "lng": 35.529562
+      },
+      "casualties": 4000,
+      "startDate": "2017-10-05",
+      "description": "Islamist insurgency in Cabo Delgado Province, Mozambique.",
+      "actors": ["Mozambique Government", "Islamist Insurgents"]
+    }
+  ]

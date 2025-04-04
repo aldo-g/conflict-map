@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edinburgh Peace Institute's Global Conflict Map</title>
+    <link rel="stylesheet" href="styles/conflict-map.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="institute-logo">
+            <img src="/images/Logo.png" alt="Edinburgh Peace Institute Logo">
+        </div>
+        <div class="header-controls">
+            <button id="sidebar-toggle" class="toggle-btn" aria-label="Toggle filters">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar Filter Panel -->
+        <aside id="filter-sidebar" class="filter-sidebar">
+            <div class="sidebar-header">
+                <h3>Filter Conflicts</h3>
+                <button id="close-sidebar" class="close-btn" aria-label="Close filters">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="filter-group">
+                <div class="filter" id="type-filter">
+                    <label>Conflict Type:</label>
+                    <select id="conflict-type">
+                        <option value="all">All Types</option>
+                        <option value="civil war">Civil War</option>
+                        <option value="insurgency">Insurgency</option>
+                        <option value="interstate">Interstate</option>
+                        <option value="territorial">Territorial</option>
+                        <option value="criminal violence">Criminal Violence</option>
+                    </select>
+                </div>
+                <div class="filter" id="intensity-filter">
+                    <label>Intensity Level:</label>
+                    <select id="conflict-intensity">
+                        <option value="all">All Levels</option>
+                        <option value="minor">Minor</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="filter" id="duration-filter">
+                    <label>Duration:</label>
+                    <select id="conflict-duration">
+                        <option value="all">All Durations</option>
+                        <option value="recent">Recent</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="protracted">Protracted</option>
+                    </select>
+                </div>
+                <div class="filter" id="region-filter">
+                    <label>Region:</label>
+                    <select id="conflict-region">
+                        <option value="all">All Regions</option>
+                        <option value="Africa">Africa</option>
+                        <option value="Middle East">Middle East</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                        <option value="North America">North America</option>
+                        <option value="South America">South America</option>
+                        <option value="Southeast Asia">Southeast Asia</option>
+                        <option value="South Asia">South Asia</option>
+                    </select>
+                </div>
+                <button id="reset-filters" class="reset-btn">Reset All Filters</button>
+            </div>
+        </aside>
+
+        <!-- Main map container (fullscreen) -->
+        <main id="map-container" class="map-container">
+            <!-- Map will be rendered here -->
+            <div id="tooltip" class="tooltip hidden"></div>
+        </main>
+    </div>
+
+    <!-- Legend footer -->
+    <footer class="legend-footer">
+        <div class="legend-container">
+            <h3>Conflict Intensity</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-color high"></span>
+                    <span>High</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color moderate"></span>
+                    <span>Moderate</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color minor"></span>
+                    <span>Minor</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-source">
+            <p>Data source: Uppsala Conflict Data Program (UCDP) | © 2025 Edinburgh Peace Institute</p>
+        </div>
+    </footer>
+
+    <!-- Single module import for Vite -->
+    <script type="module" src="/main.js"></script>
+</body>
+</html>
