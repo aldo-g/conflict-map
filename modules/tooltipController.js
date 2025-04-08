@@ -35,9 +35,10 @@ const _formatPercentage = (value) => {
   return (value * 100).toFixed(1) + '%';
 };
 
-// Create tooltip content - Enhanced for CSV conflict data
+// Create tooltip content - Enhanced for conflict-centric display
 const _createTooltipContent = (conflict) => {
   const metrics = conflict.metrics || {};
+  const isEstimated = metrics.estimated;
   
   return `
     <div class="tooltip-header">
@@ -45,18 +46,20 @@ const _createTooltipContent = (conflict) => {
       <span class="conflict-type">${conflict.type}</span>
     </div>
     <div class="tooltip-body">
+      <p><strong>Countries:</strong> ${conflict.countries ? conflict.countries.join(', ') : 'Unknown'}</p>
       <p><strong>Region:</strong> ${conflict.region}</p>
       <p><strong>Intensity:</strong> ${conflict.intensity}</p>
       <p><strong>Started:</strong> ${_formatDate(conflict.startDate)}</p>
-      <p><strong>Fatalities:</strong> ${_formatNumber(conflict.casualties)}</p>
-      <p><strong>Duration:</strong> ${conflict.duration}</p>
+      <p><strong>Fatalities:</strong> ${_formatNumber(conflict.casualties)}${isEstimated ? '*' : ''}</p>
       <p><strong>Key Actors:</strong> ${conflict.actors ? conflict.actors.join(', ') : 'Unknown'}</p>
-      ${metrics.diffusion ? `<p><strong>Area Affected:</strong> ${_formatPercentage(metrics.diffusion)}</p>` : ''}
-      ${metrics.danger ? `<p><strong>Civilian Targeting:</strong> ${_formatNumber(metrics.danger)} events</p>` : ''}
-      ${metrics.fragmentation ? `<p><strong>Armed Groups:</strong> ${_formatNumber(metrics.fragmentation)}</p>` : ''}
+      ${metrics.diffusion ? `<p><strong>Area Affected:</strong> ${_formatPercentage(metrics.diffusion)}${isEstimated ? '*' : ''}</p>` : ''}
+      ${metrics.danger ? `<p><strong>Civilian Targeting:</strong> ${_formatNumber(metrics.danger)} events${isEstimated ? '*' : ''}</p>` : ''}
+      ${metrics.fragmentation ? `<p><strong>Armed Groups:</strong> ${_formatNumber(metrics.fragmentation)}${isEstimated ? '*' : ''}</p>` : ''}
+      ${isEstimated ? '<p class="estimated-note">* Estimated values</p>' : ''}
     </div>
     <div class="tooltip-footer">
       <p>${conflict.description || ''}</p>
+      ${conflict.background ? `<p class="background-info"><strong>Background:</strong> ${conflict.background}</p>` : ''}
     </div>
   `;
 };

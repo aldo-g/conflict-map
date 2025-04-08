@@ -412,7 +412,7 @@ body {
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-lg);
   pointer-events: none;
-  max-width: 320px;
+  max-width: 380px;
   z-index: 1000;
   animation: tooltipFadeIn 0.2s ease-out;
   border: 1px solid var(--gray-200);
@@ -451,6 +451,10 @@ body {
   font-weight: 600;
 }
 
+.tooltip-body {
+  margin-bottom: var(--spacing-md);
+}
+
 .tooltip-body p {
   margin-bottom: var(--spacing-xs);
   font-size: 0.9rem;
@@ -467,9 +471,19 @@ body {
   padding-top: var(--spacing-sm);
   border-top: var(--border-width) solid var(--gray-200);
   font-size: 0.85rem;
-  font-style: italic;
-  color: var(--gray-600);
+  color: var(--gray-700);
   line-height: 1.4;
+}
+
+.tooltip-footer p {
+  margin-bottom: var(--spacing-sm);
+}
+
+.tooltip-footer .background-info {
+  font-style: italic;
+  margin-top: var(--spacing-sm);
+  font-size: 0.8rem;
+  color: var(--gray-600);
 }
 
 /* Responsive adjustments */
@@ -499,4 +513,12 @@ body {
   .filter-sidebar.active {
     transform: translateX(100%);
   }
+}
+
+.estimated-note {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-top: var(--spacing-xs);
+  opacity: 0.8;
 }

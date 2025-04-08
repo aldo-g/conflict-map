@@ -5,6 +5,7 @@
  */
 
 import * as d3 from 'd3';
+import { ConflictDefinitions } from '../data/ConflictDefinitions.js';
 
 // Private functions moved outside the exported object (module scope)
 const _validateData = (data) => {
@@ -54,62 +55,142 @@ export const DataLoader = {
   },
   
   /**
-   * Loads conflict data from a CSV file
-   * @param {string} csvUrl - URL to the CSV conflict data
+   * Loads country-level data from CSV and groups it into actual conflicts
+   * @param {string} csvUrl - URL to the CSV country data
    * @returns {Promise<Array>} - Array of conflict data objects
    */
-  loadCSVConflictData: async function(csvUrl) {
+  loadAndGroupConflictData: async function(csvUrl) {
     try {
       // Load CSV using d3's built-in CSV parser
-      const csvData = await d3.csv(csvUrl);
+      const countryData = await d3.csv(csvUrl);
       
-      // Transform CSV data to match the expected format for the map
-      const transformedData = csvData.map((row, index) => {
-        // Generate a unique ID if one is not provided
-        const id = `conflict-${index}`;
+      // Create a map to store metrics for each conflict
+      const conflictMetrics = {};
+      
+      // Initialize with zeros for all conflicts
+      ConflictDefinitions.forEach(conflict => {
+        conflictMetrics[conflict.id] = {
+          deadliness: 0,
+          danger: 0,
+          fragmentation: 0,
+          diffusion: 0,
+          countries: [],
+          countryCount: 0,
+          hasMetrics: false
+        };
+      });
+      
+      // Create a lookup of which country belongs to which conflict
+      const countryToConflictMap = {};
+      
+      // Populate the map
+      ConflictDefinitions.forEach(conflict => {
+        conflict.countries.forEach(country => {
+          if (!countryToConflictMap[country]) {
+            countryToConflictMap[country] = [];
+          }
+          countryToConflictMap[country].push(conflict.id);
+        });
+      });
+      
+      // Aggregate metrics from country data to conflicts
+      countryData.forEach(country => {
+        const conflictIds = countryToConflictMap[country.country] || [];
         
-        // Map the intensity level from index_level
+        // If the country isn't mapped to any conflict, skip it
+        if (conflictIds.length === 0) return;
+        
+        // Add metrics to each conflict this country is part of
+        conflictIds.forEach(conflictId => {
+          const metrics = conflictMetrics[conflictId];
+          
+          // Add this country's metrics
+          metrics.deadliness += parseInt(country.deadliness) || 0;
+          metrics.danger += parseInt(country.danger) || 0;
+          metrics.fragmentation += parseInt(country.fragmentation) || 0;
+          
+          // For diffusion, we'll take the maximum value among the countries
+          metrics.diffusion = Math.max(metrics.diffusion, parseFloat(country.diffusion) || 0);
+          
+          // Track included countries
+          metrics.countries.push(country.country);
+          metrics.countryCount++;
+          metrics.hasMetrics = true;
+        });
+      });
+      
+      // Now transform the conflict definitions with the aggregated metrics
+      const conflictData = ConflictDefinitions.map(conflict => {
+        const metrics = conflictMetrics[conflict.id];
+        
+        // Generate default metrics for conflicts without data
+        if (!metrics.hasMetrics) {
+          console.log(`Using default metrics for conflict: ${conflict.name}`);
+          
+          // Set default values based on conflict type
+          if (conflict.type === 'territorial' || conflict.type === 'interstate') {
+            metrics.deadliness = 5000;
+            metrics.danger = 1000;
+            metrics.fragmentation = 20;
+            metrics.diffusion = 0.05;
+          } else if (conflict.type === 'insurgency') {
+            metrics.deadliness = 3000;
+            metrics.danger = 1500;
+            metrics.fragmentation = 15;
+            metrics.diffusion = 0.03;
+          } else {
+            metrics.deadliness = 1000;
+            metrics.danger = 500;
+            metrics.fragmentation = 10;
+            metrics.diffusion = 0.02;
+          }
+        }
+        
+        // Map intensity based on deadliness or conflict type
         let intensity = 'moderate';
-        if (row.index_level === 'Extreme') {
+        if (metrics.deadliness > 20000) {
           intensity = 'high';
-        } else if (row.index_level === 'High') {
-          intensity = 'moderate';
-        } else if (row.index_level === 'Turbulent') {
+        } else if (metrics.deadliness < 1000) {
           intensity = 'minor';
         }
         
-        // Create a description from the metrics
-        const description = `This country has experienced ${row.deadliness} fatalities in the past 12 months, with ${row.danger} violence targeting civilian events. ${row.diffusion * 100}% of inhabited areas have high levels of political violence. ${row.fragmentation} armed groups are active in the country.`;
+        // For conflicts without metrics data, use the type to determine intensity
+        if (!metrics.hasMetrics) {
+          if (conflict.type === 'interstate') {
+            intensity = 'high';
+          } else if (conflict.type === 'civil war') {
+            intensity = 'high';
+          }
+        }
         
-        // Generate conflict data object
         return {
-          id: id,
-          name: `${row.country} Conflict`,
-          type: determineConflictType(row),
+          id: conflict.id,
+          name: conflict.name,
+          type: conflict.type,
           intensity: intensity,
-          duration: 'ongoing',
-          region: determineRegion(row.country),
-          location: {
-            lat: parseFloat(row.lat),
-            lng: parseFloat(row.lng)
-          },
-          casualties: parseInt(row.deadliness),
-          startDate: '2024-01-01', // Default to recent
-          description: description,
-          actors: [`Government of ${row.country}`, `Armed groups (${row.fragmentation})`],
-          // Add additional metrics from the data
+          duration: 'ongoing', // All current conflicts
+          region: getRegionForConflict(conflict),
+          location: conflict.location,
+          casualties: metrics.deadliness,
+          startDate: conflict.startDate,
+          description: conflict.description,
+          actors: conflict.primaryActors,
+          background: conflict.background,
+          countries: metrics.countries.length > 0 ? metrics.countries : conflict.countries,
+          // Add additional metrics
           metrics: {
-            deadliness: parseInt(row.deadliness),
-            diffusion: parseFloat(row.diffusion),
-            danger: parseInt(row.danger),
-            fragmentation: parseInt(row.fragmentation)
+            deadliness: metrics.deadliness,
+            diffusion: metrics.diffusion,
+            danger: metrics.danger,
+            fragmentation: metrics.fragmentation,
+            estimated: !metrics.hasMetrics
           }
         };
       });
       
-      return _validateData(transformedData);
+      return _validateData(conflictData);
     } catch (error) {
-      console.error('Error loading or parsing CSV conflict data:', error);
+      console.error('Error loading or processing conflict data:', error);
       return [];
     }
   },
@@ -146,32 +227,11 @@ export const DataLoader = {
 };
 
 /**
- * Helper function to determine conflict type based on metrics
- * @param {Object} data - Row data from CSV
- * @returns {string} - Conflict type
- */
-function determineConflictType(data) {
-  const deadliness = parseInt(data.deadliness);
-  const fragmentation = parseInt(data.fragmentation);
-  const danger = parseInt(data.danger);
-  
-  if (fragmentation > 100) {
-    return 'insurgency';
-  } else if (danger > 3000) {
-    return 'criminal violence';
-  } else if (deadliness > 10000) {
-    return 'civil war';
-  } else {
-    return 'civil conflict';
-  }
-}
-
-/**
- * Helper function to determine the region based on country name
- * @param {string} country - Country name
+ * Helper function to determine the region for a conflict based on its countries
+ * @param {Object} conflict - Conflict definition
  * @returns {string} - Region name
  */
-function determineRegion(country) {
+function getRegionForConflict(conflict) {
   const regionMap = {
     // Middle East
     'Syria': 'Middle East',
@@ -182,19 +242,27 @@ function determineRegion(country) {
     'Iran': 'Middle East',
     'Yemen': 'Middle East',
     
+    // Europe and Caucasus
+    'Ukraine': 'Europe',
+    'Russia': 'Europe',
+    'Turkey': 'Europe',
+    'Armenia': 'Europe',
+    'Azerbaijan': 'Europe',
+    
     // Africa
     'Nigeria': 'Africa',
     'Sudan': 'Africa',
+    'South Sudan': 'Africa',
     'Cameroon': 'Africa',
     'Ethiopia': 'Africa',
     'Somalia': 'Africa',
     'Mali': 'Africa',
-    'Kenya': 'Africa',
-    'South Sudan': 'Africa',
+    'Niger': 'Africa',
     'Burkina Faso': 'Africa',
+    'Chad': 'Africa',
+    'Kenya': 'Africa',
     'Burundi': 'Africa',
     'South Africa': 'Africa',
-    'Niger': 'Africa',
     'Central African Republic': 'Africa',
     'Libya': 'Africa',
     'Mozambique': 'Africa',
@@ -202,7 +270,6 @@ function determineRegion(country) {
     'Benin': 'Africa',
     'Madagascar': 'Africa',
     'Ghana': 'Africa',
-    'Chad': 'Africa',
     
     // South Asia
     'Afghanistan': 'South Asia',
@@ -215,17 +282,13 @@ function determineRegion(country) {
     'Philippines': 'Southeast Asia',
     'Indonesia': 'Southeast Asia',
     
-    // Europe
-    'Ukraine': 'Europe',
-    'Russia': 'Europe',
-    'Turkey': 'Europe',
-    
     // North America
     'Mexico': 'North America',
     'Puerto Rico': 'North America',
     'Jamaica': 'North America',
     'Honduras': 'North America',
     'Guatemala': 'North America',
+    'Haiti': 'North America',
     'Trinidad and Tobago': 'North America',
     
     // South America
@@ -239,5 +302,12 @@ function determineRegion(country) {
     'Democratic Republic of Congo': 'Africa'
   };
   
-  return regionMap[country] || 'Unknown';
+  // If we have at least one country with a defined region, use that
+  for (const country of conflict.countries) {
+    if (regionMap[country]) {
+      return regionMap[country];
+    }
+  }
+  
+  return 'Unknown';
 }

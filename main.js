@@ -34,9 +34,8 @@ async function initializeApp() {
     worldGeoData = await d3.json('https://unpkg.com/world-atlas@2/countries-110m.json');
     console.log('World map data loaded');
     
-    // Load conflict data from CSV instead of JSON
-    // conflictData = await DataLoader.loadConflictData('./data/sample-conflicts.json');
-    conflictData = await DataLoader.loadCSVConflictData('./data/ConflictData.csv');
+    // Load conflict data using the new conflict-centric approach
+    conflictData = await DataLoader.loadAndGroupConflictData('./data/ConflictData.csv');
     console.log(`Loaded ${conflictData.length} conflicts`);
     
     // Initialize filtered data
