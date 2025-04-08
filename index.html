@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edinburgh Peace Institute's Global Conflict Map</title>
-    <link rel="stylesheet" href="styles/conflict-map.css">
+    <link rel="stylesheet" href="./styles/conflict-map.css">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="importmap">
+        {
+          "imports": {
+            "d3": "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm",
+            "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm"
+          }
+        }
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -17,7 +25,7 @@
             
             <!-- Logo overlay -->
             <div class="map-logo-overlay">
-                <img src="/images/Logo.png" alt="Edinburgh Peace Institute Logo">
+                <img src="./images/Logo.png" alt="Edinburgh Peace Institute Logo">
             </div>
             
             <!-- Filter button -->
@@ -110,6 +118,6 @@
     </div>
 
     <!-- Single module import for Vite -->
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
 </html>
