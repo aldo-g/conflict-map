@@ -29,8 +29,16 @@ const _formatNumber = (number) => {
   return number.toLocaleString();
 };
 
-// Create tooltip content
+// Format percentage value
+const _formatPercentage = (value) => {
+  if (value === undefined || value === null) return 'Unknown';
+  return (value * 100).toFixed(1) + '%';
+};
+
+// Create tooltip content - Enhanced for CSV conflict data
 const _createTooltipContent = (conflict) => {
+  const metrics = conflict.metrics || {};
+  
   return `
     <div class="tooltip-header">
       <h3>${conflict.name}</h3>
@@ -40,9 +48,12 @@ const _createTooltipContent = (conflict) => {
       <p><strong>Region:</strong> ${conflict.region}</p>
       <p><strong>Intensity:</strong> ${conflict.intensity}</p>
       <p><strong>Started:</strong> ${_formatDate(conflict.startDate)}</p>
-      <p><strong>Casualties:</strong> ${_formatNumber(conflict.casualties)}</p>
+      <p><strong>Fatalities:</strong> ${_formatNumber(conflict.casualties)}</p>
       <p><strong>Duration:</strong> ${conflict.duration}</p>
       <p><strong>Key Actors:</strong> ${conflict.actors ? conflict.actors.join(', ') : 'Unknown'}</p>
+      ${metrics.diffusion ? `<p><strong>Area Affected:</strong> ${_formatPercentage(metrics.diffusion)}</p>` : ''}
+      ${metrics.danger ? `<p><strong>Civilian Targeting:</strong> ${_formatNumber(metrics.danger)} events</p>` : ''}
+      ${metrics.fragmentation ? `<p><strong>Armed Groups:</strong> ${_formatNumber(metrics.fragmentation)}</p>` : ''}
     </div>
     <div class="tooltip-footer">
       <p>${conflict.description || ''}</p>
