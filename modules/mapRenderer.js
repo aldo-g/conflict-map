@@ -33,21 +33,11 @@ const _calculateRadius = (casualties) => {
   return Math.max(6, Math.min(18, Math.sqrt(casualties / 800)));
 };
 
-// Handler for zoom events with controlled behavior
+// Handler for zoom events - Modified to allow zooming at any point, not just center
 const _handleZoom = (event) => {
   if (_g) {
-    // Here we allow the scaling but restrict translation to the initial center
-    // This keeps the map centered but allows zooming in on specific regions
-    const centerX = _width / 2; 
-    const centerY = _height / 2;
-    
-    // Create a new transform that scales from the center of the map
-    const transform = d3.zoomIdentity
-      .translate(centerX, centerY)
-      .scale(event.transform.k)
-      .translate(-centerX, -centerY);
-    
-    _g.attr('transform', transform);
+    // Apply the transform directly from the event to allow zooming at any point
+    _g.attr('transform', event.transform);
   }
 };
 
