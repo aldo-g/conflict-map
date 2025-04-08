@@ -306,18 +306,4 @@ export const ConflictDefinitions = [
       background: "Pakistan faces a resurgent Taliban insurgency along the Afghan border, separatist violence in Balochistan province, and sectarian attacks by various militant groups, creating complex security challenges."
     },
 
-    {
-      id: "azerbaijan-armenia",
-      name: "Nagorno-Karabakh Conflict",
-      countries: ["Azerbaijan", "Armenia"],
-      description: "Territorial dispute over the Nagorno-Karabakh region, with periodic outbreaks of fighting between Azerbaijan and Armenia. Azerbaijan regained control of most disputed territories in the 2020 war, with further gains in a 2023 offensive leading to the exodus of ethnic Armenians from the region.",
-      primaryActors: ["Armed Forces of Azerbaijan", "Armed Forces of Armenia", "Russian peacekeeping forces"],
-      startDate: "1988-02-20",
-      location: {
-        lat: 39.8159,
-        lng: 46.7539
-      },
-      type: "territorial",
-      background: "Long-standing dispute over the predominantly ethnic Armenian enclave within Azerbaijan. The conflict has its roots in the Soviet era, with full-scale war in the 1990s resulting in Armenian control, and subsequent Azerbaijani offensives in 2020 and 2023 reversing those gains. The 2023 campaign led to the displacement of nearly the entire ethnic Armenian population from the region."
-    }
   ];

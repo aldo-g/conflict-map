@@ -35,27 +35,60 @@ const _formatPercentage = (value) => {
   return (value * 100).toFixed(1) + '%';
 };
 
-// Create tooltip content - Enhanced for conflict-centric display
+// Get CSS class for conflict type
+const _getConflictTypeClass = (type) => {
+  const normalizedType = type.toLowerCase().trim();
+  
+  if (normalizedType === 'civil war' || normalizedType === 'civil') {
+    return 'civil-war';
+  } 
+  else if (normalizedType === 'insurgency' || normalizedType === 'rebellion') {
+    return 'insurgency';
+  } 
+  else if (normalizedType === 'interstate' || normalizedType === 'international') {
+    return 'interstate';
+  }
+  else if (normalizedType === 'territorial' || normalizedType === 'border' || normalizedType === 'boundary') {
+    return 'territorial';
+  }
+  else if (normalizedType.includes('criminal') || normalizedType.includes('drug') || normalizedType.includes('cartel')) {
+    return 'criminal-violence';
+  }
+  
+  return '';
+};
+
+// Format conflict type
+const _formatConflictType = (type) => {
+  if (!type) return 'Unknown';
+  
+  // Capitalize each word
+  return type.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+// Create tooltip content - Enhanced for conflict-centric display with type styling
 const _createTooltipContent = (conflict) => {
   const metrics = conflict.metrics || {};
-  const isEstimated = metrics.estimated;
+  const typeClass = _getConflictTypeClass(conflict.type);
+  const formattedType = _formatConflictType(conflict.type);
   
   return `
     <div class="tooltip-header">
       <h3>${conflict.name}</h3>
-      <span class="conflict-type">${conflict.type}</span>
+      <span class="conflict-type ${typeClass}">${formattedType}</span>
     </div>
     <div class="tooltip-body">
       <p><strong>Countries:</strong> ${conflict.countries ? conflict.countries.join(', ') : 'Unknown'}</p>
       <p><strong>Region:</strong> ${conflict.region}</p>
       <p><strong>Intensity:</strong> ${conflict.intensity}</p>
       <p><strong>Started:</strong> ${_formatDate(conflict.startDate)}</p>
-      <p><strong>Fatalities:</strong> ${_formatNumber(conflict.casualties)}${isEstimated ? '*' : ''}</p>
+      <p><strong>Fatalities:</strong> ${_formatNumber(conflict.casualties)}</p>
       <p><strong>Key Actors:</strong> ${conflict.actors ? conflict.actors.join(', ') : 'Unknown'}</p>
-      ${metrics.diffusion ? `<p><strong>Area Affected:</strong> ${_formatPercentage(metrics.diffusion)}${isEstimated ? '*' : ''}</p>` : ''}
-      ${metrics.danger ? `<p><strong>Civilian Targeting:</strong> ${_formatNumber(metrics.danger)} events${isEstimated ? '*' : ''}</p>` : ''}
-      ${metrics.fragmentation ? `<p><strong>Armed Groups:</strong> ${_formatNumber(metrics.fragmentation)}${isEstimated ? '*' : ''}</p>` : ''}
-      ${isEstimated ? '<p class="estimated-note">* Estimated values</p>' : ''}
+      ${metrics.diffusion ? `<p><strong>Area Affected:</strong> ${_formatPercentage(metrics.diffusion)}</p>` : ''}
+      ${metrics.danger ? `<p><strong>Civilian Targeting:</strong> ${_formatNumber(metrics.danger)} events</p>` : ''}
+      ${metrics.fragmentation ? `<p><strong>Armed Groups:</strong> ${_formatNumber(metrics.fragmentation)}</p>` : ''}
     </div>
     <div class="tooltip-footer">
       <p>${conflict.description || ''}</p>

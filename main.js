@@ -49,11 +49,10 @@ async function initializeApp() {
     MapRenderer.renderConflicts(filteredData);
     console.log('Conflicts rendered on map');
     
-    // Initialize filter controller
+    // Initialize filter controller with updated config (no duration filter)
     FilterController.initializeFilters({
       typeFilterId: 'conflict-type',
       intensityFilterId: 'conflict-intensity',
-      durationFilterId: 'conflict-duration',
       regionFilterId: 'conflict-region',
       resetButtonId: 'reset-filters'
     });

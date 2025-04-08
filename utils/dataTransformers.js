@@ -24,11 +24,6 @@ const applyFilters = (conflicts, filters) => {
       return false;
     }
     
-    // Filter by duration
-    if (filters.duration !== 'all' && conflict.duration !== filters.duration) {
-      return false;
-    }
-    
     // Filter by region
     if (filters.region !== 'all') {
       // Check if conflict region exactly matches or is a subregion

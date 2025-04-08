@@ -19,13 +19,17 @@ let _zoom = null;
 let _g = null; // For zoom handling
 let _pointsGroup = null; // Group for conflict points
 
-// Modern color scale for conflict intensity
-const _intensityColorScale = {
-  'high': '#FF5A5F',
-  'moderate': '#FFC857',
-  'minor': '#54DEFD',
-  'unknown': '#8675A9'
+// Color scale for conflict types
+const _typeColorScale = {
+  'civil war': '#FF5A5F',      // Red
+  'insurgency': '#FFC857',     // Yellow/Orange
+  'interstate': '#54DEFD',     // Blue
+  'territorial': '#8675A9',    // Purple
+  'criminal violence': '#1DB954' // Green
 };
+
+// Default color for unknown types
+const _defaultColor = '#8675A9';
 
 // Calculate point radius based on casualties with a more dramatic scale
 const _calculateRadius = (casualties) => {
@@ -209,6 +213,31 @@ const _setupMap = (containerId, worldGeoData) => {
   return _svg;
 };
 
+// Get color for conflict type with fallback
+const _getConflictTypeColor = (type) => {
+  // Handle variations in type string
+  const normalizedType = type.toLowerCase().trim();
+  
+  if (normalizedType === 'civil war' || normalizedType === 'civil') {
+    return _typeColorScale['civil war'];
+  } 
+  else if (normalizedType === 'insurgency' || normalizedType === 'rebellion') {
+    return _typeColorScale['insurgency'];
+  } 
+  else if (normalizedType === 'interstate' || normalizedType === 'international') {
+    return _typeColorScale['interstate'];
+  }
+  else if (normalizedType === 'territorial' || normalizedType === 'border' || normalizedType === 'boundary') {
+    return _typeColorScale['territorial'];
+  }
+  else if (normalizedType.includes('criminal') || normalizedType.includes('drug') || normalizedType.includes('cartel')) {
+    return _typeColorScale['criminal violence'];
+  }
+  
+  // Default fallback
+  return _defaultColor;
+};
+
 // Exported object with public methods
 export const MapRenderer = {
   /**
@@ -248,7 +277,7 @@ export const MapRenderer = {
         return coords ? coords[1] : 0;
       })
       .attr('r', d => _calculateRadius(d.casualties) * 1.5)
-      .attr('fill', d => _intensityColorScale[d.intensity] || _intensityColorScale.unknown)
+      .attr('fill', d => _getConflictTypeColor(d.type))
       .attr('opacity', 0.2)
       .attr('filter', 'url(#glow)');
     
@@ -267,11 +296,11 @@ export const MapRenderer = {
       })
       .attr('r', d => _calculateRadius(d.casualties))
       .attr('class', 'conflict-point')
-      .attr('fill', d => _intensityColorScale[d.intensity] || _intensityColorScale.unknown)
+      .attr('fill', d => _getConflictTypeColor(d.type))
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
       .attr('opacity', 0.9)
-      .attr('data-intensity', d => d.intensity)
+      .attr('data-type', d => d.type)
       .attr('data-id', d => d.id)
       // Add mouse events for tooltips with enhanced interactions
       .on('mouseover', function(event, d) {
